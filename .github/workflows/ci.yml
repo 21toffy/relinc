@@ -17,7 +17,6 @@ jobs:
       postgres:
         # Docker Hub image
         image: postgres:13
-        
         env:
           POSTGRES_USER: root
           POSTGRES_DB: relinc_db
