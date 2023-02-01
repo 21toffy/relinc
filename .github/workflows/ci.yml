@@ -49,10 +49,10 @@ jobs:
         echo "------------------"
         ls
         sudo mv migrate /usr/bin/
-        which migrateupcicd
+        which migrate
 
     - name: Run Migrations
-      run: make migrateup
+      run: make migrateupcicd
 
     - name: Test
       run: make test
