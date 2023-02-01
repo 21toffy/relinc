@@ -9,7 +9,7 @@ createdb:
 dropdb:
 	docker exec -it relinc1 dropdb relinc_db
 migrateupcicd:
-	migrate -path db/migration -database "postgresql://root:root@172.17.0.2:5432/relinc_db?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://root:root@localhost:5432/relinc_db?sslmode=disable" -verbose up
 migrateup:
 	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.2:5432/relinc_db?sslmode=disable" -verbose up
 migratedown:
