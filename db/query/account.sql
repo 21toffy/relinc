@@ -13,6 +13,10 @@ RETURNING *;
 SELECT * FROM accounts
 WHERE owner = $1 LIMIT 1;
 
+-- name: GetUsertAccountByAccountId :one
+SELECT * FROM accounts
+WHERE id = $1 LIMIT 1;
+
 -- name: GetUsersAccounts :many
 SELECT * FROM accounts
 ORDER BY owner

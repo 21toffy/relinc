@@ -111,7 +111,7 @@ func (q *Queries) GetUsersAccounts(ctx context.Context, arg GetUsersAccountsPara
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Account
+	items := []Account{}
 	for rows.Next() {
 		var i Account
 		if err := rows.Scan(
@@ -142,6 +142,25 @@ WHERE owner = $1 LIMIT 1
 
 func (q *Queries) GetUsertAccount(ctx context.Context, owner int64) (Account, error) {
 	row := q.db.QueryRowContext(ctx, getUsertAccount, owner)
+	var i Account
+	err := row.Scan(
+		&i.ID,
+		&i.Owner,
+		&i.Balance,
+		&i.Currency,
+		&i.AccountType,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUsertAccountByAccountId = `-- name: GetUsertAccountByAccountId :one
+SELECT id, owner, balance, currency, account_type, created_at FROM accounts
+WHERE id = $1 LIMIT 1
+`
+
+func (q *Queries) GetUsertAccountByAccountId(ctx context.Context, id int64) (Account, error) {
+	row := q.db.QueryRowContext(ctx, getUsertAccountByAccountId, id)
 	var i Account
 	err := row.Scan(
 		&i.ID,
