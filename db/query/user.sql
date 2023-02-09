@@ -6,11 +6,12 @@ INSERT INTO users (
   phone_number,
   username,
   dob,
+  password,
   address,
   profile_picture,
   gender
 ) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8, $9
+  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
 )
 RETURNING *;
 

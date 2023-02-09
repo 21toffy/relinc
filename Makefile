@@ -5,9 +5,9 @@ startpostgres:
 checkpostgres:
 	docker status relinc
 createdb:
-	docker exec -it relinc1 createdb --username=tofunmi --owner=tofunmi relinc_db
+	docker exec -it relinc createdb --username=tofunmi --owner=tofunmi relinc_db
 dropdb:
-	docker exec -it relinc1 dropdb relinc_db
+	docker exec -it relinc dropdb --username=tofunmi relinc_db
 migrateupcicd:
 	migrate -path db/migration -database "postgresql://root:root@localhost:5432/relinc_db?sslmode=disable" -verbose up
 migrateup:

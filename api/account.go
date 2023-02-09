@@ -8,11 +8,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 )
 
 // example_dob = "2023-02-04T09:35:25.490276Z"
-type CreateAccountRequest struct {
+type CreateUserAccountRequest struct {
 	FirstName      string    `json:"first_name" binding:"required"`
+	Password       string    `json:"password" binding:"required"`
 	LastName       string    `json:"last_name" binding:"required"`
 	EmailAddress   string    `json:"email_address" binding:"required"`
 	PhoneNumber    string    `json:"phone_number" binding:"required"`
@@ -26,15 +28,15 @@ type CreateAccountRequest struct {
 	AccountType    string    `json:"account_type" binding:"required"`
 }
 
-func (server *Server) CreateAccount(ctx *gin.Context) {
-	var req CreateAccountRequest
+func (server *Server) CreateUserAccount(ctx *gin.Context) {
+	var req CreateUserAccountRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		fmt.Println("the error ocured here")
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
-	arg := db.CreateAccountTxParams{
+	arg := db.CreateUserAccountTxParams{
 		FirstName:      req.FirstName,
 		LastName:       req.LastName,
 		EmailAddress:   req.EmailAddress,
@@ -47,10 +49,15 @@ func (server *Server) CreateAccount(ctx *gin.Context) {
 		Balance:        req.Balance,
 		Currency:       req.Currency,
 		AccountType:    req.AccountType,
+		Password:       req.Password,
 	}
 
-	account, err := server.store.CreateAccountTx(ctx, arg)
+	account, err := server.store.CreateUserAccountTx(ctx, arg)
 	if err != nil {
+		if pqError, ok := err.(*pq.Error); ok {
+			ctx.JSON(http.StatusBadRequest, DbErrorResponse(pqError))
+
+		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
@@ -109,5 +116,41 @@ func (server *Server) ListAccount(ctx *gin.Context) {
 
 	}
 	ctx.JSON(http.StatusOK, accounts)
+	return
+}
+
+type CreateAccountRequest struct {
+	Owner       int64  `json:"owner" binding:"required"`
+	Balance     int64  `json:"balance" binding:"required"`
+	Currency    string `json:"currency" binding:"required,currency"`
+	AccountType string `json:"account_type" binding:"required"`
+}
+
+func (server *Server) CreateAccount(ctx *gin.Context) {
+	var req CreateAccountRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		fmt.Println("the error ocured here")
+		fmt.Println(req, 1234)
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	arg := db.CreateUserAccountParams{
+		Owner:       req.Owner,
+		Balance:     req.Balance,
+		Currency:    req.Currency,
+		AccountType: req.AccountType,
+	}
+
+	account, err := server.store.CreateUserAccount(ctx, arg)
+	if err != nil {
+		if pqError, ok := err.(*pq.Error); ok {
+			ctx.JSON(http.StatusBadRequest, DbErrorResponse(pqError))
+			return
+		}
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	ctx.JSON(http.StatusOK, account)
 	return
 }

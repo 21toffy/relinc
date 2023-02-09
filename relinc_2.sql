@@ -24,7 +24,7 @@ CREATE TABLE "accounts" (
 );
 
 CREATE TABLE "entries" (
-  "id" bigserial PRIMARY KEY,
+  "id" BIGSERIAL PRIMARY KEY,
   "account_id" bigint NOT NULL,
   "amount" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
@@ -32,29 +32,30 @@ CREATE TABLE "entries" (
 
 CREATE TABLE "transfers" (
   "id" BIGSERIAL PRIMARY KEY,
-  "from_account_id" bigint NOT NULL,
-  "to_account_id" bigint NOT NULL,
+  "from_account_id" bigint,
+  "to_account_id" bigint,
   "amount" bigint NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE INDEX ON "accounts" ("owner");
 
+CREATE UNIQUE INDEX ON "accounts" ("owner", "currency");
+
 CREATE INDEX ON "entries" ("account_id");
 
 CREATE INDEX ON "transfers" ("from_account_id");
 
 CREATE INDEX ON "transfers" ("to_account_id");
+
 CREATE INDEX ON "transfers" ("from_account_id", "to_account_id");
 
 COMMENT ON COLUMN "entries"."amount" IS 'Can be negative or positive';
 
 COMMENT ON COLUMN "transfers"."amount" IS 'It must be positive';
 
-
 ALTER TABLE "accounts" ADD FOREIGN KEY ("owner") REFERENCES "users" ("id");
 
-ALTER TABLE "accounts" ADD CONSTRAINT "owner_currency_key" UNIQUE ("owner", "currency");
 ALTER TABLE "entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id");
 
 ALTER TABLE "transfers" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts" ("id");

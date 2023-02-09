@@ -5,8 +5,9 @@ import (
 	"time"
 )
 
-type CreateAccountTxParams struct {
+type CreateUserAccountTxParams struct {
 	FirstName      string    `json:"first_name"`
+	Password       string    `json:"password"`
 	LastName       string    `json:"last_name"`
 	EmailAddress   string    `json:"email_address"`
 	PhoneNumber    string    `json:"phone_number"`
@@ -20,7 +21,7 @@ type CreateAccountTxParams struct {
 	AccountType    string    `json:"account_type"`
 }
 
-type CreateAccountTxResult struct {
+type CreateUserAccountTxResult struct {
 	User    User    `json:"user"`
 	Account Account `json:"account"`
 }
@@ -116,14 +117,15 @@ func (store *Store) GetAccountTx(ctx context.Context, arg int64) (GetUserAccount
 
 // TransferTx performs a money transfer from one account to another
 // it will create transfer record, add account entries and update account balance within a single db transaction
-func (store *Store) CreateAccountTx(ctx context.Context, arg CreateAccountTxParams) (CreateAccountTxResult, error) {
-	var result CreateAccountTxResult
+func (store *Store) CreateUserAccountTx(ctx context.Context, arg CreateUserAccountTxParams) (CreateUserAccountTxResult, error) {
+	var result CreateUserAccountTxResult
 
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 
 		result.User, err = q.CreateUser(ctx, CreateUserParams{
 			FirstName:      arg.FirstName,
+			Password:       arg.Password,
 			LastName:       arg.LastName,
 			EmailAddress:   arg.EmailAddress,
 			PhoneNumber:    arg.PhoneNumber,

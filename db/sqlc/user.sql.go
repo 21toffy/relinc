@@ -18,13 +18,14 @@ INSERT INTO users (
   phone_number,
   username,
   dob,
+  password,
   address,
   profile_picture,
   gender
 ) VALUES (
-  $1, $2, $3, $4, $5, $6, $7, $8, $9
+  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
 )
-RETURNING id, first_name, last_name, email_address, phone_number, username, dob, address, profile_picture, gender, created_at
+RETURNING id, first_name, last_name, email_address, phone_number, username, password, password_changed_at, dob, address, profile_picture, gender, created_at
 `
 
 type CreateUserParams struct {
@@ -34,6 +35,7 @@ type CreateUserParams struct {
 	PhoneNumber    string    `json:"phone_number"`
 	Username       string    `json:"username"`
 	Dob            time.Time `json:"dob"`
+	Password       string    `json:"password"`
 	Address        string    `json:"address"`
 	ProfilePicture string    `json:"profile_picture"`
 	Gender         string    `json:"gender"`
@@ -47,6 +49,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.PhoneNumber,
 		arg.Username,
 		arg.Dob,
+		arg.Password,
 		arg.Address,
 		arg.ProfilePicture,
 		arg.Gender,
@@ -59,6 +62,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.EmailAddress,
 		&i.PhoneNumber,
 		&i.Username,
+		&i.Password,
+		&i.PasswordChangedAt,
 		&i.Dob,
 		&i.Address,
 		&i.ProfilePicture,
@@ -79,7 +84,7 @@ func (q *Queries) DeleteUser(ctx context.Context, id int64) error {
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, first_name, last_name, email_address, phone_number, username, dob, address, profile_picture, gender, created_at FROM users
+SELECT id, first_name, last_name, email_address, phone_number, username, password, password_changed_at, dob, address, profile_picture, gender, created_at FROM users
 WHERE id = $1 LIMIT 1
 `
 
@@ -93,6 +98,8 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 		&i.EmailAddress,
 		&i.PhoneNumber,
 		&i.Username,
+		&i.Password,
+		&i.PasswordChangedAt,
 		&i.Dob,
 		&i.Address,
 		&i.ProfilePicture,
@@ -103,7 +110,7 @@ func (q *Queries) GetUser(ctx context.Context, id int64) (User, error) {
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, first_name, last_name, email_address, phone_number, username, dob, address, profile_picture, gender, created_at FROM users
+SELECT id, first_name, last_name, email_address, phone_number, username, password, password_changed_at, dob, address, profile_picture, gender, created_at FROM users
 ORDER BY id
 LIMIT $1
 OFFSET $2
@@ -130,6 +137,8 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			&i.EmailAddress,
 			&i.PhoneNumber,
 			&i.Username,
+			&i.Password,
+			&i.PasswordChangedAt,
 			&i.Dob,
 			&i.Address,
 			&i.ProfilePicture,

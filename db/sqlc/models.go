@@ -35,15 +35,17 @@ type Transfer struct {
 }
 
 type User struct {
-	ID             int64     `json:"id"`
-	FirstName      string    `json:"first_name"`
-	LastName       string    `json:"last_name"`
-	EmailAddress   string    `json:"email_address"`
-	PhoneNumber    string    `json:"phone_number"`
-	Username       string    `json:"username"`
-	Dob            time.Time `json:"dob"`
-	Address        string    `json:"address"`
-	ProfilePicture string    `json:"profile_picture"`
-	Gender         string    `json:"gender"`
-	CreatedAt      time.Time `json:"created_at"`
+	ID                int64     `json:"id"`
+	FirstName         string    `json:"first_name"`
+	LastName          string    `json:"last_name"`
+	EmailAddress      string    `json:"email_address"`
+	PhoneNumber       string    `json:"phone_number"`
+	Username          string    `json:"username"`
+	Password          string    `json:"password"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	Dob               time.Time `json:"dob"`
+	Address           string    `json:"address"`
+	ProfilePicture    string    `json:"profile_picture"`
+	Gender            string    `json:"gender"`
+	CreatedAt         time.Time `json:"created_at"`
 }
