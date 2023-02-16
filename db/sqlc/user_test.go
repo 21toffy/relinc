@@ -3,14 +3,19 @@ package db
 import (
 	"context"
 	"database/sql"
-	"relinc/util"
 	"testing"
 	"time"
+
+	"github.com/21toffy/relinc/util"
 
 	"github.com/stretchr/testify/require"
 )
 
 func CreateRandomUser(t *testing.T) User {
+	password := util.RandomString(10)
+	hashedPassword, err := util.HashPassword(password)
+	require.NoError(t, err)
+
 	arg := CreateUserParams{
 		FirstName:      util.RandomOwner(),
 		LastName:       util.RandomOwner(),
@@ -18,6 +23,7 @@ func CreateRandomUser(t *testing.T) User {
 		PhoneNumber:    util.RandomPhone(),
 		Username:       util.RandomOwner(),
 		Dob:            GetTime(),
+		Password:       hashedPassword,
 		Address:        "1 bulabai way",
 		ProfilePicture: "https:www.tofunmiprofile.com.png",
 		Gender:         "male",

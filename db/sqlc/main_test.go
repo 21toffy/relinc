@@ -4,8 +4,9 @@ import (
 	"database/sql"
 	"log"
 	"os"
-	"relinc/util"
 	"testing"
+
+	"github.com/21toffy/relinc/util"
 
 	_ "github.com/lib/pq"
 )

@@ -23,6 +23,14 @@ ORDER BY owner
 LIMIT $1
 OFFSET $2;
 
+-- name: GetUsersAccountsByUserEmail :many
+SELECT accounts.*, users.email_address
+FROM accounts
+INNER JOIN users ON accounts.owner = users.id
+WHERE users.email_address = $1 ;
+
+
+
 
 -- name: GetUserAccountForUpdateAccount :one
 SELECT * FROM accounts
@@ -43,3 +51,10 @@ UPDATE accounts
 SET balance = balance + sqlc.arg(amount)
 WHERE id = sqlc.arg(id)
 RETURNING *;
+
+
+-- name: GetUserAccountWithUserFields :one
+SELECT accounts.*, users.email_address, users.id as user_id
+FROM accounts
+INNER JOIN users ON accounts.owner = users.id
+WHERE accounts.id = $1;

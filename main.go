@@ -3,9 +3,10 @@ package main
 import (
 	"database/sql"
 	"log"
-	"relinc/api"
-	db "relinc/db/sqlc"
-	"relinc/util"
+
+	"github.com/21toffy/relinc/api"
+	db "github.com/21toffy/relinc/db/sqlc"
+	"github.com/21toffy/relinc/util"
 
 	_ "github.com/lib/pq"
 )
@@ -26,8 +27,13 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot connect to db:", err)
 	}
+
 	store := db.NewStore(conn)
-	server := api.NewServer(*store)
+	server, err := api.NewServer(config, store)
+
+	if err != nil {
+		log.Fatal("cannot creaste server", err)
+	}
 
 	err = server.Start(config.ServerAddres)
 	if err != nil {

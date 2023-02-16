@@ -2,8 +2,9 @@ package db
 
 import (
 	"context"
-	"relinc/util"
 	"testing"
+
+	"github.com/21toffy/relinc/util"
 
 	"github.com/stretchr/testify/require"
 )

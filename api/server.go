@@ -2,40 +2,63 @@ package api
 
 import (
 	"fmt"
-	db "relinc/db/sqlc"
+	// "go/token"
+	db "github.com/21toffy/relinc/db/sqlc"
 
+	"github.com/21toffy/relinc/token"
+	"github.com/21toffy/relinc/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 	"github.com/lib/pq"
 )
 
-// serve all HTTP request for banking service
+// serve all HTTP request for banking service// Server serves HTTP requests for our banking service.
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	config     util.Config
+	store      db.Store
+	tokenMaker token.Maker
+	router     *gin.Engine
 }
 
-func NewServer(store db.Store) *Server {
-	router := gin.Default()
-	server := &Server{store: store}
-
+func NewServer(config util.Config, store *db.Store) (*Server, error) {
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker: %w", err)
+	}
+	server := &Server{
+		config:     config,
+		store:      *store,
+		tokenMaker: tokenMaker,
+	}
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		v.RegisterValidation("currency", validCurrrency)
+		v.RegisterValidation("currency", validCurrency)
 	}
 
-	router.POST("/user-and-account", server.CreateUserAccount)
-	router.POST("/accounts-for-user", server.CreateAccount)
+	server.setupRouter()
+	return server, nil
 
-	router.GET("/accounts/:id", server.GetAccount)
-	router.GET("/accounts", server.ListAccount)
-	router.POST("/transfers", server.TransferMoney)
-
-	server.router = router
-	return server
 }
 
-// start the HTTP server
+func (server *Server) setupRouter() {
+	router := gin.Default()
+
+	router.POST("/user-and-account", server.CreateUserAccount)
+	router.POST("/user/login", server.LoginUser)
+	router.POST("/tokens/renew_access", server.renewAccessToken)
+
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+
+	authRoutes.POST("/accounts-for-user", server.CreateAccount)
+
+	authRoutes.GET("/accounts/:id", server.GetAccount)
+	authRoutes.GET("/all/accounts", server.ListAccount)
+	authRoutes.POST("/transfers", server.TransferMoney)
+	server.router = router
+
+}
+
+// Start runs the HTTP server on a specific address.
 func (server *Server) Start(address string) error {
 	return server.router.Run(address)
 }
