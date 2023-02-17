@@ -13,6 +13,24 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      # Label used to access the service container
+      # postgres:
+      #   # Docker Hub image
+      #   image: postgres:13
+      #   env:
+      #     POSTGRES_USER: root
+      #     POSTGRES_DB: relinc_db
+      #     POSTGRES_PASSWORD: root
+      #   # Set health checks to wait until postgres has started
+      #   options: >-
+      #     --health-cmd pg_isready
+      #     --health-interval 10s
+      #     --health-timeout 5s
+      #     --health-retries 5
+      #   ports:
+      #     - 5432:5432
+
+      # services:
       postgres:
         image: postgres:13
         env:
@@ -27,10 +45,8 @@ jobs:
         ports:
           - 5432:5432
 
-        - name: Print Postgres logs
+        name: Print Postgres logs
           run: echo "${{ jobs.test.services.postgres.logs }}"
-
-
 
     steps:
 
