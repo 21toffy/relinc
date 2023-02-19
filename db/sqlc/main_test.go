@@ -13,7 +13,7 @@ import (
 
 const (
 	dbDriver = "postgres"
-	dbSource = "postgresql://tofunmi:toffy123@172.17.0.2:5432/relinc_db?sslmode=disable"
+	dbSource = "postgresql://tofunmi:toffy123@172.17.0.3:5432/relinc_db?sslmode=disable"
 )
 
 var testQueries *Queries

@@ -1,5 +1,5 @@
 postgres:
-	docker run -d --name relinc --ip=127.0.0.1 -p 5439:5439 -e POSTGRES_USER=tofunmi -e POSTGRES_PASSWORD=toffy123 postgres:13
+	docker run -d --network relinc-network --name relinc --ip=127.0.0.1 -p 5439:5439 -e POSTGRES_USER=tofunmi -e POSTGRES_PASSWORD=toffy123 postgres:13
 startpostgres:
 	docker start relinc
 checkpostgres:
@@ -11,9 +11,9 @@ dropdb:
 migrateupcicd:
 	migrate -path db/migration -database "postgresql://root:root@localhost:5432/relinc_db?sslmode=disable" -verbose up
 migrateup:
-	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.2:5432/relinc_db?sslmode=disable" -verbose up
+	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.3:5432/relinc_db?sslmode=disable" -verbose up
 migratedown:
-	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.2:5432/relinc_db?sslmode=disable" -verbose down
+	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.3:5432/relinc_db?sslmode=disable" -verbose down
 sqlc:
 	sqlc generate
 test:
@@ -37,9 +37,9 @@ server:
 # migrateupcicd:
 # 	migrate -path db/migration -database "postgresql://root:root@localhost:5432/relinc_db?sslmode=disable" -verbose up
 # migrateup:
-# 	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.2:5432/relinc_db?sslmode=disable" -verbose up
+# 	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.3:5432/relinc_db?sslmode=disable" -verbose up
 # migratedown:
-# 	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.2:5432/relinc_db?sslmode=disable" -verbose down
+# 	migrate -path db/migration -database "postgresql://tofunmi:toffy123@172.17.0.3:5432/relinc_db?sslmode=disable" -verbose down
 # sqlc:
 # 	sqlc generate
 # server:
