@@ -45,8 +45,8 @@ jobs:
         ports:
           - 5432:5432
 
-        name: Print Postgres logs
-          run: echo "${{ jobs.test.services.postgres.logs }}"
+        # name: Print Postgres logs
+        #   run: echo "${{ jobs.test.services.postgres.logs }}"
 
     steps:
 
@@ -65,7 +65,7 @@ jobs:
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.2/migrate.darwin-amd64.tar.gz | tar xvz
         echo "------------------"
         ls
-        sudo mv migrate /usr/bin/
+        sudo mv migrate.linux-amd64 /usr/bin/
         which migrate
 
     - name: Run Migrations

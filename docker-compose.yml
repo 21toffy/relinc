@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=tofunmi
+      - POSTGRES_PASSWORD=toffy123
+      - POSTGRES_DB=relinc_db
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - DB_SOURCE=postgresql://tofunmi:toffy123@postgres:5432/relinc_db?sslmode=disable
+    depends_on:
+      - postgres
+    entrypoint:
+      [
+        "/app/wait-for.sh",
+        "postgres:5432",
+        "--",
+        "/app/start.sh"
+      ]
+    command: [ "/app/main" ]
