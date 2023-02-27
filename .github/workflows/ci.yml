@@ -63,6 +63,7 @@ jobs:
         echo "------------------"
         ls
         sudo mv migrate.linux-amd64 /usr/bin/
+        echo "++++++++++++"
         which migrate
 
     - name: Run Migrations
