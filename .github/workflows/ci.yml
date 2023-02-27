@@ -64,6 +64,9 @@ jobs:
         ls
         sudo mv migrate.linux-amd64 /usr/bin/
         echo "++++++++++++"
+        cd /usr/bin
+        echo "000000000"
+        ls
         which migrate
 
     - name: Run Migrations
