@@ -10,6 +10,7 @@ type Config struct {
 	Environment          string        `mapstructure:"ENVIRONMENT"`
 	DBDriver             string        `mapstructure:"DB_DRIVER"`
 	DbSource             string        `mapstructure:"DB_SOURCE"`
+	CicdDbSource         string        `mapstructure:"CICD_DB_SOURCE"`
 	ServerAddres         string        `mapstructure:"SERVER_ADDRESS"`
 	MigrationURL         string        `mapstructure:"MIGRATION_URL"`
 	RedisAddress         string        `mapstructure:"REDIS_ADDRESS"`

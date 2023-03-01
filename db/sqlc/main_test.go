@@ -29,7 +29,11 @@ func TestMain(m *testing.M) {
 	testDB, err = sql.Open(config.DBDriver, config.DbSource)
 
 	if err != nil {
-		log.Fatal("cannot connect to db:", err)
+		testDB, err = sql.Open(config.DBDriver, config.CicdDbSource)
+		if err != nil {
+
+			log.Fatal("cannot connect to db:", err)
+		}
 	}
 
 	testQueries = New(testDB)
