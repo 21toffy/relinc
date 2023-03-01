@@ -62,9 +62,9 @@ jobs:
         curl -L https://github.com/golang-migrate/migrate/releases/download/v4.12.2/migrate.linux-amd64.tar.gz | tar xvz
         echo "------------------"
         ls
-        sudo mv migrate.linux-amd64 /usr/bin/
+        sudo mv migrate.linux-amd64 /usr/bin/migrate
         echo "++++++++++++"
-        cd /usr/bin
+        
 
 
     - name: Run Migrations
